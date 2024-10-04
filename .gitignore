@@ -1,5 +1,4 @@
 # Ignore the Zola build output folder
-public/
 working-rough-css-lifeisacanvas/
 
 # Ignore temporary files created by editors or OS
