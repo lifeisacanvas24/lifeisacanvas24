@@ -1,31 +1,26 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Install Zola
+      - name: Setup Git
         run: |
-          curl -LO https://github.com/getzola/zola/releases/download/v0.19.2/zola-v0.19.2-x86_64-unknown-linux-gnu.tar.gz
-          tar -xzf zola-v0.19.2-x86_64-unknown-linux-gnu.tar.gz
-          sudo mv zola /usr/local/bin/
-          rm zola-v0.19.2-x86_64-unknown-linux-gnu.tar.gz
-
-      - name: Build with Zola
-        run: zola build
-
-      - name: Deploy to GitHub Pages
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Set your SSH key as a secret
-        run: |
-          echo "$SSH_PRIVATE_KEY" > id_rsa
-          chmod 600 id_rsa
-          eval "$(ssh-agent -s)"
-          ssh-add id_rsa
           git config --global user.email "agriyain2k@gmail.com"
-          git config --global user.name "lifeisacanvas24"
+          git config --global user.name "GitHub Actions Bot"
+
+      - name: Deploy
+        run: |
           git checkout -b gh-pages
-          git add public/*
+          git add .
           git commit -m "Deploying to gh-pages"
-          git push --force git@github.com:lifeisacanvas24/lifeisacanvas24.git gh-pages
+          git push -f origin gh-pages
